@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brechq LocalDrop</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="brand-section">
+      <img src="../../asset/icon.png" alt="Brechq LocalDrop" class="brand-logo" id="header-logo">
+      <h1 class="brand-title">Brechq LocalDrop</h1>
+    </div>
+    <div class="header-status">
+      <div class="status-badge">
+        <span class="status-indicator"></span>
+        <span id="header-ip-text">Connecting...</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <nav class="app-nav">
+    <button class="nav-tab active" data-page="home" id="tab-home">
+      <span class="nav-icon" id="nav-icon-home"></span>
+      <span>LocalDrop</span>
+    </button>
+    <button class="nav-tab" data-page="history" id="tab-history">
+      <span class="nav-icon" id="nav-icon-history"></span>
+      <span>History</span>
+    </button>
+    <button class="nav-tab" data-page="settings" id="tab-settings">
+      <span class="nav-icon" id="nav-icon-settings"></span>
+      <span>Settings</span>
+    </button>
+  </nav>
+
+  <!-- Main Views Container -->
+  <main class="app-main">
+    <!-- Page 1: Home / QR Share -->
+    <section class="page-view active" id="view-home">
+      <!-- File Selection Area -->
+      <div class="drop-zone" id="drop-zone">
+        <div class="drop-zone-icon" id="drop-icon"></div>
+        <h2 class="drop-zone-title" id="drop-title">Drop files here to share via QR Code</h2>
+        <p class="drop-zone-subtitle">or click to choose files from PC &bull; Instant download & preview on any phone</p>
+      </div>
+
+      <!-- Main QR Share Panel (Appears when files are selected) -->
+      <div class="qr-main-card" id="qr-main-card" style="display: none;">
+        <div class="qr-card-header">
+          <div class="files-summary-wrap">
+            <span class="files-summary-title" id="selected-files-summary">0 files ready to share</span>
+            <span class="files-summary-sub">Scan the QR code with your phone camera on the same Wi-Fi</span>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn btn-secondary" id="btn-add-more-files" style="padding: 6px 12px; font-size: 12px;">+ Add Files</button>
+            <button class="btn btn-secondary" id="btn-clear-files" style="padding: 6px 12px; font-size: 12px;">Clear</button>
+          </div>
+        </div>
+
+        <div class="qr-card-body">
+          <div class="qr-code-section">
+            <div class="qr-frame">
+              <img id="main-qr-image" src="" alt="QR Code">
+            </div>
+            <div class="qr-instructions">
+              <h4 class="qr-title">Scan with Phone Camera</h4>
+              <p class="qr-desc">Open Camera or QR scanner on Android or iPhone. No app needed.</p>
+              
+              <div class="qr-link-box">
+                <span id="main-share-url-text" class="qr-link-text"></span>
+                <button class="btn btn-primary" id="btn-copy-main-url" style="padding: 4px 10px; font-size: 11px; flex-shrink: 0;">Copy Link</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="qr-files-section">
+            <div class="files-section-header">
+              <span class="files-heading">Shared Files</span>
+            </div>
+            <ul class="files-list" id="selected-files-list"></ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Features Highlights (Shown when no files are selected) -->
+      <div class="features-row" id="features-row">
+        <div class="feature-card">
+          <div class="feature-icon" id="feat-icon-phone"></div>
+          <h4 class="feature-title">No App Needed on Phone</h4>
+          <p class="feature-desc">Scan with your phone's default camera. Works directly in Chrome and Safari.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" id="feat-icon-wifi"></div>
+          <h4 class="feature-title">Direct Wi-Fi Speed</h4>
+          <p class="feature-desc">Transfers directly between devices over your local network without internet quota.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" id="feat-icon-preview"></div>
+          <h4 class="feature-title">Instant Web Preview</h4>
+          <p class="feature-desc">Preview photos, play videos, and stream audio on your phone before downloading.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Page 2: History -->
+    <section class="page-view" id="view-history">
+      <div class="section-header">
+        <h3 class="section-title">Transfer History</h3>
+        <button class="btn btn-secondary" id="btn-clear-history" style="padding: 5px 10px; font-size: 12px;">
+          <span id="trash-icon"></span>
+          <span>Clear History</span>
+        </button>
+      </div>
+
+      <div class="history-list" id="history-container">
+        <!-- Transfer records rendered here -->
+      </div>
+
+      <div class="empty-state" id="history-empty" style="display: none;">
+        <h4 class="empty-state-title">No transfer history</h4>
+        <p class="empty-state-sub">Files you send or receive will appear here.</p>
+      </div>
+    </section>
+
+    <!-- Page 3: Settings -->
+    <section class="page-view" id="view-settings">
+      <!-- General Settings -->
+      <div class="settings-section">
+        <h4 class="settings-heading">General</h4>
+        <div class="form-group">
+          <label class="form-label" for="setting-device-name">Device Name</label>
+          <div class="form-control-row">
+            <input type="text" class="input-text" id="setting-device-name" placeholder="Enter device name">
+            <button class="btn btn-primary" id="btn-save-device-name">Save</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="setting-download-path">Download Location</label>
+          <div class="form-control-row">
+            <input type="text" class="input-text" id="setting-download-path" readonly>
+            <button class="btn btn-secondary" id="btn-browse-download-path">Browse</button>
+          </div>
+        </div>
+        <div class="toggle-group">
+          <div class="toggle-label">
+            <span class="toggle-title">Automatically accept transfers</span>
+            <span class="toggle-desc">Accept incoming files without asking for confirmation</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="setting-auto-accept">
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="toggle-group">
+          <div class="toggle-label">
+            <span class="toggle-title">Start with Windows</span>
+            <span class="toggle-desc">Launch Brechq LocalDrop automatically when you sign in</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="setting-start-windows">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Network Info -->
+      <div class="settings-section">
+        <h4 class="settings-heading">Network</h4>
+        <table class="info-table">
+          <tbody>
+            <tr>
+              <td class="key">Local IP Address</td>
+              <td class="val" id="net-ip">-</td>
+            </tr>
+            <tr>
+              <td class="key">Subnet Mask</td>
+              <td class="val" id="net-mask">-</td>
+            </tr>
+            <tr>
+              <td class="key">Transfer Server Port</td>
+              <td class="val" id="net-port">-</td>
+            </tr>
+            <tr>
+              <td class="key">Discovery Port (UDP)</td>
+              <td class="val" id="net-disc-port">53317</td>
+            </tr>
+            <tr>
+              <td class="key">Network Status</td>
+              <td class="val" id="net-status">Online</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- About -->
+      <div class="settings-section">
+        <h4 class="settings-heading">About</h4>
+        <div class="about-box">
+          <img src="../../asset/icon.png" alt="Logo" class="about-logo">
+          <div class="about-info">
+            <h5 class="about-title">Brechq LocalDrop</h5>
+            <p class="about-desc">Local file sharing made simple.</p>
+            <p class="about-meta">Version 1.0.0 &bull; Made by brechq</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- MODAL: Incoming Transfer Prompt -->
+  <div class="modal-overlay" id="modal-incoming">
+    <div class="modal-card">
+      <div class="modal-header">
+        <span class="modal-title">Incoming file transfer</span>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 14px; margin-bottom: 12px;">
+          <strong id="incoming-sender-name">Device</strong> wants to send:
+        </p>
+        <div style="background-color: var(--bg-elevated); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 12px; margin-bottom: 12px;">
+          <p id="incoming-file-summary" style="font-weight: 500; font-size: 14px; margin-bottom: 4px;"></p>
+          <p id="incoming-file-size" style="font-size: 12px; color: var(--text-secondary);"></p>
+        </div>
+        <p style="font-size: 12px; color: var(--text-muted);">Would you like to accept and download these files?</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="btn-decline-transfer">Decline</button>
+        <button class="btn btn-primary" id="btn-accept-transfer">Accept</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Transfer Progress -->
+  <div class="modal-overlay" id="modal-progress">
+    <div class="modal-card">
+      <div class="modal-header">
+        <span class="modal-title" id="progress-modal-title">Transferring files</span>
+      </div>
+      <div class="modal-body">
+        <p id="progress-peer-text" style="font-size: 13px; color: var(--text-secondary); margin-bottom: 8px;">Connecting to peer...</p>
+        <p id="progress-file-name" style="font-size: 14px; font-weight: 500; word-break: break-all; margin-bottom: 4px;">Preparing...</p>
+
+        <div class="progress-bar-container">
+          <div class="progress-bar-fill" id="progress-bar-fill"></div>
+        </div>
+
+        <div class="progress-stats-row">
+          <span id="progress-percent">0%</span>
+          <span id="progress-bytes">0 MB / 0 MB</span>
+        </div>
+        <div class="progress-rate-row">
+          <span id="progress-speed">0.0 MB/s</span>
+          <span id="progress-eta">Calculating remaining time...</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="btn-cancel-transfer">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Downloaded Success State (Uses downloaded.jpg) -->
+  <div class="modal-overlay" id="modal-downloaded">
+    <div class="modal-card">
+      <div class="modal-body" style="text-align: center; padding-top: 16px;">
+        <div class="state-image-wrapper">
+          <img src="../../asset/downloaded.jpg" alt="Downloaded" class="state-image">
+        </div>
+        <h3 class="state-title">Downloaded!</h3>
+        <p class="state-file-name" id="downloaded-filename">-</p>
+        <p class="state-desc" id="downloaded-filesize">-</p>
+        <p class="state-desc" style="margin-top: 8px; color: var(--text-muted);">Saved to Downloads</p>
+      </div>
+      <div class="modal-footer" style="justify-content: center;">
+        <button class="btn btn-secondary" id="btn-open-folder">Open folder</button>
+        <button class="btn btn-primary" id="btn-close-downloaded">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Download Failed State (Uses failed.jpg) -->
+  <div class="modal-overlay" id="modal-failed">
+    <div class="modal-card">
+      <div class="modal-body" style="text-align: center; padding-top: 16px;">
+        <div class="state-image-wrapper">
+          <img src="../../asset/failed.jpg" alt="Failed" class="state-image">
+        </div>
+        <h3 class="state-title">Download failed</h3>
+        <p class="state-desc" id="failed-reason-text">The file could not be transferred.</p>
+      </div>
+      <div class="modal-footer" style="justify-content: center;">
+        <button class="btn btn-secondary" id="btn-close-failed">Close</button>
+        <button class="btn btn-primary" id="btn-retry-transfer">Try again</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Share via QR Code / Web for Phone -->
+  <div class="modal-overlay" id="modal-qr-share">
+    <div class="modal-card" style="max-width: 440px;">
+      <div class="modal-header">
+        <span class="modal-title">Share to Phone (QR Code)</span>
+        <button class="btn-icon-only" id="btn-close-qr-top" style="cursor: pointer;"></button>
+      </div>
+      <div class="modal-body" style="text-align: center; padding: 24px 20px;">
+        <div style="background: #ffffff; padding: 12px; display: inline-block; border-radius: 8px; margin-bottom: 16px; border: 1px solid var(--border-color);">
+          <img id="qr-image" src="" alt="QR Code" style="width: 210px; height: 210px; display: block;">
+        </div>
+        <p style="font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px;">
+          Scan with your phone's camera
+        </p>
+        <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 16px;">
+          Connected to the same Wi-Fi. No app install needed on your phone.
+        </p>
+        <div style="background: var(--bg-elevated); border: 1px solid var(--border-color); border-radius: 6px; padding: 8px 12px; display: flex; align-items: center; justify-content: space-between;">
+          <span id="qr-share-url-text" style="font-family: monospace; font-size: 12px; color: #60a5fa; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 260px;"></span>
+          <button class="btn btn-secondary" id="btn-copy-share-url" style="padding: 4px 8px; font-size: 11px; flex-shrink: 0; margin-left: 8px;">Copy Link</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="btn-stop-qr-share">Stop Sharing</button>
+        <button class="btn btn-primary" id="btn-close-qr-share">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="components/icons.js"></script>
+  <script src="pages/home.js"></script>
+  <script src="pages/history.js"></script>
+  <script src="pages/settings.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

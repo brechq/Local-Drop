@@ -1,0 +1,66 @@
+{
+  "name": "brechq-localdrop",
+  "version": "1.0.0",
+  "description": "Fast and secure local file sharing between devices on your network",
+  "main": "src/main/main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "electron test/test-integration.js && electron test/test-discovery.js && electron test/test-qr-web-share.js && electron test/test-ui-console.js",
+    "generate-ico": "node scripts/generate-ico.js",
+    "pack": "electron-builder --dir",
+    "dist": "npm run generate-ico && electron-builder"
+  },
+  "keywords": [
+    "file-sharing",
+    "lan",
+    "localsend",
+    "electron",
+    "p2p"
+  ],
+  "author": "brechq",
+  "license": "MIT",
+  "build": {
+    "appId": "com.brechq.localdrop",
+    "productName": "Brechq LocalDrop",
+    "directories": {
+      "output": "dist",
+      "buildResources": "asset"
+    },
+    "files": [
+      "src/**/*",
+      "asset/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "asset/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": "always",
+      "createStartMenuShortcut": true,
+      "shortcutName": "Brechq LocalDrop",
+      "installerIcon": "asset/icon.ico",
+      "uninstallerIcon": "asset/icon.ico",
+      "uninstallDisplayName": "Brechq LocalDrop",
+      "artifactName": "Brechq-LocalDrop-Setup.${ext}"
+    }
+  },
+  "devDependencies": {
+    "electron": "^34.2.0",
+    "electron-builder": "^25.1.8",
+    "png-to-ico": "^2.1.8"
+  },
+  "dependencies": {
+    "qrcode": "^1.5.4"
+  }
+}

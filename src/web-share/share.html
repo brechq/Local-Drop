@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Brechq LocalDrop - Shared Files</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --elevated: #243042;
+      --border: #334155;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --success: #10b981;
+      --radius: 8px;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text-primary);
+      line-height: 1.5;
+      padding: 16px;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--accent);
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+    }
+    .brand-title {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+    .brand-sub {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    .info-banner {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .info-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .info-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+    .badge-lan {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 8px;
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 4px;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      white-space: nowrap;
+    }
+    .dot-online {
+      width: 6px;
+      height: 6px;
+      background: var(--success);
+      border-radius: 50%;
+    }
+    .file-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .file-card-header {
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .file-meta {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .file-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 320px;
+    }
+    .file-size {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+    .preview-container {
+      background: #000;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      max-height: 380px;
+      overflow: hidden;
+    }
+    .preview-img {
+      width: 100%;
+      height: auto;
+      max-height: 360px;
+      object-fit: contain;
+      display: block;
+    }
+    .preview-video {
+      width: 100%;
+      max-height: 360px;
+      background: #000;
+      display: block;
+    }
+    .preview-audio-wrapper {
+      padding: 16px;
+      background: var(--elevated);
+      width: 100%;
+    }
+    audio {
+      width: 100%;
+    }
+    .file-card-footer {
+      padding: 12px 16px;
+      background: var(--elevated);
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
+    .btn-download {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--accent);
+      color: #fff;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      transition: background 0.15s ease;
+      min-height: 42px;
+      width: 100%;
+    }
+    .btn-download:hover, .btn-download:active {
+      background: var(--accent-hover);
+    }
+    .download-icon {
+      width: 16px;
+      height: 16px;
+    }
+    .empty-message {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-secondary);
+    }
+    footer {
+      text-align: center;
+      padding: 24px 0 16px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+      </div>
+      <div>
+        <h1 class="brand-title">Brechq LocalDrop</h1>
+        <p class="brand-sub" id="sender-info">Local Wi-Fi Share</p>
+      </div>
+    </header>
+
+    <div class="info-banner">
+      <div>
+        <div class="info-title" id="files-summary">Loading shared files...</div>
+        <div class="info-desc">Direct peer-to-peer transfer via local network</div>
+      </div>
+      <div class="badge-lan">
+        <span class="dot-online"></span>
+        <span>LAN Wi-Fi</span>
+      </div>
+    </div>
+
+    <main id="files-list">
+      <!-- File cards injected dynamically -->
+    </main>
+
+    <footer>
+      Brechq LocalDrop &bull; Fast, local & private file sharing
+    </footer>
+  </div>
+
+  <script>
+    function formatBytes(bytes) {
+      if (!bytes || bytes === 0) return '0 B';
+      const k = 1024;
+      const sizes = ['B', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    }
+
+    function isImage(name) {
+      return /\.(jpe?g|png|gif|webp|svg|bmp)$/i.test(name);
+    }
+
+    function isVideo(name) {
+      return /\.(mp4|webm|mov|mkv|avi|m4v)$/i.test(name);
+    }
+
+    function isAudio(name) {
+      return /\.(mp3|wav|ogg|m4a|aac|flac)$/i.test(name);
+    }
+
+    async function loadSharedFiles() {
+      try {
+        const res = await fetch('/api/share/info');
+        if (!res.ok) throw new Error('Failed to load file information');
+        const data = await res.json();
+
+        document.getElementById('sender-info').textContent = `Shared from ${data.senderName || 'PC'}`;
+        
+        const count = (data.files && data.files.length) || 0;
+        const totalSize = (data.files || []).reduce((acc, f) => acc + (f.size || 0), 0);
+        document.getElementById('files-summary').textContent = `${count} ${count === 1 ? 'file' : 'files'} ready (${formatBytes(totalSize)})`;
+
+        const container = document.getElementById('files-list');
+        container.innerHTML = '';
+
+        if (!data.files || data.files.length === 0) {
+          container.innerHTML = `
+            <div class="empty-message">
+              <p>No files are currently being shared.</p>
+            </div>
+          `;
+          return;
+        }
+
+        data.files.forEach(file => {
+          const card = document.createElement('div');
+          card.className = 'file-card';
+
+          const previewUrl = `/api/share/preview?fileId=${encodeURIComponent(file.id)}`;
+          const downloadUrl = `/api/share/download?fileId=${encodeURIComponent(file.id)}`;
+
+          let previewHtml = '';
+          if (isImage(file.name)) {
+            previewHtml = `
+              <div class="preview-container">
+                <img src="${previewUrl}" alt="${file.name}" class="preview-img" loading="lazy">
+              </div>
+            `;
+          } else if (isVideo(file.name)) {
+            previewHtml = `
+              <div class="preview-container">
+                <video controls preload="metadata" playsinline class="preview-video">
+                  <source src="${previewUrl}">
+                  Your browser does not support video playback.
+                </video>
+              </div>
+            `;
+          } else if (isAudio(file.name)) {
+            previewHtml = `
+              <div class="preview-audio-wrapper">
+                <audio controls preload="metadata">
+                  <source src="${previewUrl}">
+                  Your browser does not support audio playback.
+                </audio>
+              </div>
+            `;
+          }
+
+          card.innerHTML = `
+            <div class="file-card-header">
+              <div class="file-meta">
+                <span class="file-name" title="${file.name}">${file.name}</span>
+                <span class="file-size">${formatBytes(file.size)}</span>
+              </div>
+            </div>
+            ${previewHtml}
+            <div class="file-card-footer">
+              <a href="${downloadUrl}" class="btn-download" download="${file.name}">
+                <svg class="download-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                <span>Download (${formatBytes(file.size)})</span>
+              </a>
+            </div>
+          `;
+
+          container.appendChild(card);
+        });
+      } catch (err) {
+        console.error(err);
+        document.getElementById('files-summary').textContent = 'Error loading files';
+        document.getElementById('files-list').innerHTML = `
+          <div class="empty-message">
+            <p>Could not connect to the sender. Ensure your device is on the same Wi-Fi.</p>
+          </div>
+        `;
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadSharedFiles);
+  </script>
+</body>
+</html>
