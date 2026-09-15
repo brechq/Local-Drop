@@ -1,7 +1,6 @@
 # Brechq LocalDrop
 
-A fast, lightweight, and clean desktop file-sharing application for Windows that allows you to transfer files between devices on the same local network (LAN) without cloud storage, accounts, or external servers. Inspired by LocalSend.
-
+![Brechq LocalDrop](asset/brechq-localdrop.png)
 ---
 
 ## Features
