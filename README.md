@@ -1,5 +1,3 @@
-# Brechq LocalDrop
-
 ![Brechq LocalDrop](asset/brechq-localdrop.png)
 ---
 
